@@ -1,0 +1,23 @@
+# This Ansible playbook sets up a Kubernetes master node by initializing the cluster with kubeadm init, 
+# configuring access for the ubuntu user, 
+# and applying Calico as the Container Network Interface (CNI) for pod communication. 
+- name: Setup Kubernetes Cluster
+  hosts: master
+  become: yes
+  tasks:
+    - name: Initialize Kubernetes Master
+      shell: kubeadm init --pod-network-cidr=192.168.1.0/16
+
+    - name: Create .kube directory
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Copy kube config
+      shell: cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+
+    - name: Apply CNI (Calico)
+      shell: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml

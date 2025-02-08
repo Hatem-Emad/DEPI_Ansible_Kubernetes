@@ -1,0 +1,32 @@
+# This Ansible playbook installs Docker on all targeted Ubuntu hosts with elevated privileges (become: yes).
+#  It adds necessary dependencies, the Docker GPG key, the official Docker repository, installs Docker, 
+# and ensures the Docker service is started and enabled at boot.
+- name: Install Docker
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+    - name: Add Docker repository
+      shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes

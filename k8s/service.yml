@@ -1,0 +1,15 @@
+# This Kubernetes Service exposes the web-app pods using a NodePort. 
+# It forwards traffic from port 80 on the service to port 5000 in the pods. 
+# This allows external access to the application through a node's IP and a dynamically assigned port.
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: NodePort

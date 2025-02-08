@@ -1,0 +1,22 @@
+# This Kubernetes Deployment ensures that two replicas of the web-app container run continuously, 
+# providing high availability. It manages pod creation, updates, and self-healing if a pod fails.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web-app
+          image: my-web-app:latest
+          ports:
+            - containerPort: 5000
